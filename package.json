@@ -9,6 +9,7 @@
     "sequelize": "node_modules/.bin/sequelize"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "pg": "6",
     "pg-hstore": "^2.3.2",

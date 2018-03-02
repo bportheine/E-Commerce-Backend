@@ -1,40 +1,9 @@
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
+const Router = require('express').Router
+const Product = require('./model')
 
-app.use(bodyParser.json())
+const router = new Router()
 
-var Sequelize = require('sequelize')
-var sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres:secret@localhost:5432/postgres')
-
-app.listen(process.env.PORT || 4001, () => console.log('Express API listening on port 4001'))
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-  next()
-})
-
-const Product = sequelize.define('Product', {
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  price: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
-  description: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  image: {
-    type: Sequelize.STRING,
-    allowNull: false
-  }})
-
-app.get('/products', (req, res) => {
+router.get('/products', (req, res) => {
   const products = Product
     .findAll()
     .then((products) => {
@@ -47,7 +16,7 @@ app.get('/products', (req, res) => {
     })
 })
 
-app.get('/products/:id', (req, res) => {
+router.get('/products/:id', (req, res) => {
   const products = Product
     .findById(req.params.id)
     .then((product) => {
@@ -66,7 +35,7 @@ app.get('/products/:id', (req, res) => {
 })
 
 //Create New Products
-app.post('/products', (req, res) => {
+router.post('/products', (req, res) => {
   const product = req.body
 
   Product.crete(product)
@@ -81,7 +50,7 @@ app.post('/products', (req, res) => {
 })
 
 //Edit products
-app.put('/products/:id', (req, res) => {
+router.put('/products/:id', (req, res) => {
   const productId = Number(req.params.id)
   const updates = req.body
   // find the product in the DB
@@ -102,3 +71,5 @@ app.put('/products/:id', (req, res) => {
     })
 
 })
+
+module.exports = router
